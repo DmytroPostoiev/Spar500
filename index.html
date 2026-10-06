@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0f766e">
+<title>Meine Sparchallenge</title>
+<style>
+:root{--text:#12161c;--muted:#5d6672;--accent:#18a566;--glass:rgba(255,255,255,var(--a));--line:rgba(255,255,255,.55);--cell:rgba(255,255,255,.45);--a:.55;--blur:18px;--shadow:0 10px 40px rgba(0,0,0,.12)}
+:root[data-t=dark]{--text:#f2f5f8;--muted:#a3adba;--glass:rgba(24,27,34,var(--a));--line:rgba(255,255,255,.12);--cell:rgba(255,255,255,.1);--shadow:0 10px 40px rgba(0,0,0,.4)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%}
+body{color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Arial,sans-serif;background:#0f766e}
+body::before{content:"";position:fixed;inset:0;z-index:-1;background:var(--bg) center/cover no-repeat;transition:background .3s}
+main{position:fixed;inset:0;padding:calc(10px + env(safe-area-inset-top)) calc(10px + env(safe-area-inset-right)) calc(88px + env(safe-area-inset-bottom)) calc(10px + env(safe-area-inset-left))}
+.grid{width:100%;height:100%;display:grid;gap:8px}
+.fab{position:fixed;left:calc(14px + env(safe-area-inset-left));bottom:calc(14px + env(safe-area-inset-bottom));width:64px;height:64px;border-radius:20px;font-size:26px;border:1px solid var(--line);cursor:pointer;color:var(--text);z-index:5}
+.mini{position:fixed;right:calc(14px + env(safe-area-inset-right));bottom:calc(14px + env(safe-area-inset-bottom));min-width:150px;height:64px;padding:0 18px;border-radius:20px;border:2px solid var(--accent);display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1;cursor:pointer;z-index:5}
+.mini b{font-size:clamp(26px,7vmin,40px);font-weight:900;letter-spacing:-1px}
+.mini small{font-size:12px;color:var(--muted);font-weight:700}
+.card{border-radius:20px;padding:16px;margin-top:12px}
+.icon{width:46px;height:46px;border-radius:50%;border:1px solid var(--line);font-size:20px;cursor:pointer;color:var(--text)}
+.top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.total{font-size:clamp(28px,8vw,38px);font-weight:800;letter-spacing:-1px}
+.muted{color:var(--muted);font-size:14px}
+.bar{height:12px;background:var(--cell);border-radius:99px;overflow:hidden;margin:14px 0 8px}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),#5eead4);border-radius:99px;transition:width .3s}
+.stats{display:flex;justify-content:space-between;font-size:14px;color:var(--muted)}
+.cell{border:1px solid var(--line);border-radius:14px;background:var(--cell);backdrop-filter:blur(var(--blur));-webkit-backdrop-filter:blur(var(--blur));color:var(--text);min-width:0;font-weight:800;font-size:clamp(14px,4.2vmin,30px);font-family:inherit;cursor:pointer;touch-action:manipulation;transition:transform .1s}
+.cell:active{transform:scale(.93)}
+.cell.on{background:var(--accent);color:#fff;border-color:transparent;text-decoration:line-through;opacity:.9}
+button.btn,select,input[type=number]{font:inherit;min-height:48px;border-radius:14px;border:1px solid var(--line);background:var(--cell);color:var(--text);padding:0 14px;width:100%}
+select option{color:#000}
+button.btn{font-weight:700;cursor:pointer}
+.pri{background:var(--accent)!important;color:#fff!important;border-color:transparent!important}
+.dan{color:#e5484d}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+label{display:block;font-size:13px;font-weight:700;color:var(--muted);margin:14px 0 6px}
+dialog{border-radius:26px;padding:22px;width:min(92vw,420px);max-height:88vh;overflow:auto;margin:auto}
+dialog::backdrop{background:rgba(0,0,0,.45);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+dialog h2{margin:0 0 4px;font-size:22px}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.seg button.on{background:var(--accent);color:#fff}
+.pre{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.pre button{height:54px;border-radius:12px;border:2px solid var(--line);cursor:pointer}
+.pre button.on{border-color:var(--accent)}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.hd{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
+.x{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--cell);color:var(--text);font-size:18px;cursor:pointer;flex:none}
+.item{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:12px 14px;margin-top:10px;border-radius:18px;border:1px solid var(--line);background:var(--cell);color:var(--text);font:inherit;cursor:pointer}
+.item:active{transform:scale(.98)}
+.item .ic{width:42px;height:42px;border-radius:12px;background:var(--glass);display:grid;place-items:center;font-size:20px;flex:none}
+.item b{display:block;font-size:16px}.item small{display:block;color:var(--muted);font-size:13px;margin-top:2px}
+.item::after{content:"›";margin-left:auto;font-size:24px;color:var(--muted)}
+.item.dan b{color:#e5484d}
+.sec{margin-top:20px}.sec h3{margin:0 0 8px;font-size:13px;letter-spacing:.6px;text-transform:uppercase;color:var(--muted)}
+.prev{height:110px;border-radius:16px;border:1px solid var(--line);background:#0f766e center/cover;display:grid;place-items:end start;padding:8px}
+.prev span{background:rgba(0,0,0,.5);color:#fff;font-size:12px;padding:3px 9px;border-radius:99px}
+.sl{display:flex;justify-content:space-between;font-size:14px;margin-top:12px}.sl b{color:var(--accent)}
+.big{font-size:54px;text-align:center}.center{text-align:center}
+.sum{font-size:26px;font-weight:800;margin:6px 0;color:var(--accent)}
+</style>
+</head>
+<body>
+<main><div class="grid" id="grid"></div></main>
+<div class="mini glass" id="mini"></div>
+<button class="fab glass" id="openMenu" aria-label="Menü">☰</button>
+
+<!-- Menü -->
+<dialog id="dMenu"><div class="hd"><h2>💰 Menü</h2><button class="x" data-close aria-label="Schließen">✕</button></div>
+ <section class="card glass" style="margin-top:8px">
+  <div class="top"><div><div class="total" id="saved">0,00 €</div><div class="muted" id="ofTotal"></div></div>
+  <div style="text-align:right"><div id="left" style="font-weight:800;font-size:18px"></div><div class="muted">noch übrig</div></div></div>
+  <div class="bar"><i id="prog"></i></div>
+  <div class="stats"><span id="count"></span><span id="pct"></span></div>
+ </section>
+ <button class="item" id="openAdd"><span class="ic">➕</span><span><b>Betrag hinzufügen</b><small>Eigenen Betrag speichern</small></span></button>
+ <button class="item" id="openSet"><span class="ic">⚙️</span><span><b>Einstellungen</b><small>Hintergrundbild, Design, Währung</small></span></button>
+ <button class="item" id="exp"><span class="ic">⬇️</span><span><b>Daten exportieren</b><small>Als JSON-Datei sichern</small></span></button>
+ <button class="item" id="imp"><span class="ic">⬆️</span><span><b>Daten importieren</b><small>JSON-Datei von anderem Gerät laden</small></span></button>
+ <button class="item dan" id="openReset"><span class="ic">🗑️</span><span><b>Alles zurücksetzen</b><small>Alle gesparten Beträge löschen</small></span></button>
+ <input type="file" id="jfile" accept=".json,application/json" hidden>
+ <div class="muted center" id="msg" style="margin-top:12px;min-height:18px"></div>
+</dialog>
+
+<!-- Betrag hinzufügen -->
+<dialog id="dAdd"><h2>Eigenen Betrag</h2><div class="muted">Wie viel hast du gespart?</div>
+ <label for="extra">Betrag</label><input id="extra" type="number" min="0" step="0.01" inputmode="decimal" placeholder="z. B. 25">
+ <div class="row"><button class="btn" data-close>Abbrechen</button><button class="btn pri" id="addOk">Hinzufügen</button></div>
+</dialog>
+
+<!-- Gratulation -->
+<dialog id="dDone"><div class="center"><div class="big">🎉</div><h2>Gratulation!</h2>
+ <p id="doneTxt" class="muted" style="font-size:16px"></p>
+ <div class="sum" id="doneSum"></div><div class="muted" id="doneLeft"></div>
+ <button class="btn pri" style="margin-top:18px" data-close>Weiter sparen</button></div>
+</dialog>
+
+<!-- Einstellungen -->
+<dialog id="dSet"><div class="hd"><button class="x" data-back aria-label="Zurück">←</button><h2 style="flex:1;margin-left:4px">Einstellungen</h2></div>
+ <div class="sec"><h3>🖼️ Hintergrundbild</h3>
+  <div class="prev" id="prev"><span>Aktueller Hintergrund</span></div>
+  <div class="row"><button class="btn pri" id="pick">Bild aus Galerie wählen</button><button class="btn" id="noBg">Standard</button></div>
+  <input type="file" id="file" accept="image/*" hidden>
+  <div class="muted" style="margin:12px 0 8px">Oder einen Farbverlauf wählen:</div>
+  <div class="pre" id="pre"></div></div>
+ <div class="sec"><h3>🌗 Aussehen</h3>
+  <div class="seg" id="theme"><button class="btn" data-v="auto">Auto</button><button class="btn" data-v="light">☀️ Hell</button><button class="btn" data-v="dark">🌙 Dunkel</button></div></div>
+ <div class="sec"><h3>✨ Glas-Effekt</h3>
+  <div class="sl"><span>Transparenz</span><b id="aV"></b></div><input type="range" id="alpha" min="15" max="95" value="55">
+  <div class="sl"><span>Unschärfe</span><b id="bV"></b></div><input type="range" id="blur" min="0" max="40" value="18"></div>
+ <div class="sec"><h3>💶 Währung</h3>
+  <select id="cur"><option value="EUR">Euro (€)</option><option value="CHF">Schweizer Franken (CHF)</option><option value="PLN">Złoty (zł)</option></select></div>
+ <button class="btn pri" data-back style="margin-top:22px">Fertig</button>
+</dialog>
+
+<!-- Zurücksetzen -->
+<dialog id="dReset"><h2>Wirklich löschen?</h2><div class="muted">Alle gespeicherten Beträge werden zurückgesetzt.</div>
+ <div class="row"><button class="btn" data-close>Abbrechen</button><button class="btn pri dan" id="resetOk" style="background:#e5484d!important">Löschen</button></div>
+</dialog>
+
+<script>
+const amounts=[10,5,2,5,2,10,2,1,5,2,2,5,1,10,5,1,5,5,1,5,20,1,1,2,20,5,1,2,10,2,5,5,5,100,1,2,10,5,1,5,10,2,1,5,2,5,2,20,2,1,2,5,10,1,10,1,5,1,1,10,5,20,1,2,5,10,2,2,5,65];
+const TOTAL=amounts.reduce((a,b)=>a+b,0), KEY="sparchallenge-v2", $=id=>document.getElementById(id);
+const PRESETS=["linear-gradient(135deg,#0f766e,#1e3a8a)","linear-gradient(135deg,#f97316,#be185d)","linear-gradient(135deg,#4f46e5,#06b6d4)","linear-gradient(135deg,#111827,#374151)"];
+let S={saved:[],extra:[],currency:"EUR",theme:"auto",bg:0,alpha:55,blur:18};
+try{Object.assign(S,JSON.parse(localStorage.getItem(KEY)||"{}"))}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){alert("Speicher voll – Bild ist zu groß.")}}
+const fmt=n=>new Intl.NumberFormat("de-DE",{style:"currency",currency:S.currency}).format(n);
+const total=()=>S.saved.reduce((s,i)=>s+amounts[i],0)+S.extra.reduce((s,n)=>s+n,0);
+
+function applyLook(){
+ const r=document.documentElement,dark=S.theme==="dark"||(S.theme==="auto"&&matchMedia("(prefers-color-scheme:dark)").matches);
+ r.dataset.t=dark?"dark":"light";
+ r.style.setProperty("--a",S.alpha/100);r.style.setProperty("--blur",S.blur+"px");
+ r.style.setProperty("--bg",typeof S.bg==="number"?PRESETS[S.bg]:`url(${S.bg})`);
+ document.querySelectorAll("#theme button").forEach(b=>b.classList.toggle("on",b.dataset.v===S.theme));
+ document.querySelectorAll("#pre button").forEach((b,i)=>b.classList.toggle("on",S.bg===i));
+ $("prev").style.background=typeof S.bg==="number"?PRESETS[S.bg]:`url(${S.bg}) center/cover`;$("aV").textContent=S.alpha+" %";$("bV").textContent=S.blur+" px";
+ $("cur").value=S.currency;$("alpha").value=S.alpha;$("blur").value=S.blur;
+}
+function render(){
+ const s=total(),p=Math.min(100,s/TOTAL*100);
+ document.querySelectorAll(".cell").forEach((b,i)=>b.classList.toggle("on",S.saved.includes(i)));
+ $("saved").textContent=fmt(s);$("left").textContent=fmt(Math.max(0,TOTAL-s));
+ $("ofTotal").textContent="von "+fmt(TOTAL)+" gespart";
+ $("prog").style.width=p+"%";$("pct").textContent=Math.round(p)+" %";
+ $("count").textContent=S.saved.length+" von "+amounts.length+" Feldern";
+ $("mini").innerHTML="<b>"+fmt(s)+"</b><small>von "+fmt(TOTAL)+"</small>";
+}
+function congrats(v){
+ const s=total();
+ $("doneTxt").textContent="Du hast "+fmt(v)+" gespart.";
+ $("doneSum").textContent="Summe = "+fmt(s);
+ $("doneLeft").textContent=s>=TOTAL?"🏆 Ziel erreicht – alle "+fmt(TOTAL)+" sind gespart!":"Noch "+fmt(TOTAL-s)+" bis zum Ziel.";
+ $("dDone").showModal();
+}
+// Felder
+function layout(){
+ const W=innerWidth-20,H=innerHeight-98-(parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--sb"))||0),n=amounts.length,c=Math.max(1,Math.round(Math.sqrt(n*W/H))),r=Math.ceil(n/c),g=$("grid");
+ g.style.gridTemplateColumns=`repeat(${c},minmax(0,1fr))`;g.style.gridTemplateRows=`repeat(${r},minmax(0,1fr))`;
+}
+addEventListener("resize",layout);
+$("grid").innerHTML=amounts.map((a,i)=>`<button class="cell" data-i="${i}">${a}</button>`).join("");
+$("grid").addEventListener("click",e=>{
+ const b=e.target.closest(".cell");if(!b)return;const i=+b.dataset.i,p=S.saved.indexOf(i);
+ if(p>=0){S.saved.splice(p,1);save();render();}else{S.saved.push(i);save();render();congrats(amounts[i]);}
+});
+// Betrag hinzufügen
+$("openMenu").onclick=()=>{$("msg").textContent="";$("dMenu").showModal()};
+$("mini").onclick=$("openMenu").onclick;
+const openAdd=()=>{$("dMenu").close();$("extra").value="";$("dAdd").showModal();setTimeout(()=>$("extra").focus(),50)};
+$("openAdd").onclick=openAdd;
+$("addOk").onclick=()=>{
+ const v=parseFloat($("extra").value.replace(",","."));
+ if(!Number.isFinite(v)||v<=0)return;
+ S.extra.push(v);save();render();$("dAdd").close();congrats(v);
+};
+$("extra").addEventListener("keydown",e=>{if(e.key==="Enter")$("addOk").click()});
+// Einstellungen
+$("openSet").onclick=()=>{$("dMenu").close();$("dSet").showModal()};
+$("cur").onchange=e=>{S.currency=e.target.value;save();render()};
+$("theme").onclick=e=>{const b=e.target.closest("button");if(!b)return;S.theme=b.dataset.v;save();applyLook()};
+$("pre").innerHTML=PRESETS.map((g,i)=>`<button style="background:${g}" data-i="${i}" aria-label="Hintergrund ${i+1}"></button>`).join("");
+$("pre").onclick=e=>{const b=e.target.closest("button");if(!b)return;S.bg=+b.dataset.i;save();applyLook()};
+$("noBg").onclick=()=>{S.bg=0;save();applyLook()};
+$("pick").onclick=()=>$("file").click();
+$("file").onchange=e=>{
+ const f=e.target.files[0];if(!f)return;const img=new Image(),u=URL.createObjectURL(f);
+ img.onload=()=>{const m=1400,k=Math.min(1,m/Math.max(img.width,img.height)),c=document.createElement("canvas");
+  c.width=img.width*k;c.height=img.height*k;c.getContext("2d").drawImage(img,0,0,c.width,c.height);
+  S.bg=c.toDataURL("image/jpeg",.78);URL.revokeObjectURL(u);save();applyLook();};
+ img.src=u;e.target.value="";
+};
+$("alpha").oninput=e=>{S.alpha=+e.target.value;applyLook()};$("alpha").onchange=save;
+$("blur").oninput=e=>{S.blur=+e.target.value;applyLook()};$("blur").onchange=save;
+// Zurücksetzen
+$("openReset").onclick=()=>{$("dMenu").close();$("dReset").showModal()};
+$("resetOk").onclick=()=>{S.saved=[];S.extra=[];save();render();$("dReset").close()};
+// Schließen
+document.querySelectorAll("dialog").forEach(d=>d.addEventListener("click",e=>{if(e.target.closest("[data-back]")&&e.target!==d){d.close();$("dMenu").showModal()}else if(e.target===d||e.target.closest("[data-close]"))d.close()}));
+matchMedia("(prefers-color-scheme:dark)").addEventListener?.("change",applyLook);
+// Export / Import
+$("exp").onclick=()=>{
+ const blob=new Blob([JSON.stringify({app:"sparchallenge",version:2,data:S})],{type:"application/json"}),a=document.createElement("a");
+ a.href=URL.createObjectURL(blob);a.download="sparchallenge-"+new Date().toISOString().slice(0,10)+".json";
+ document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);$("msg").textContent="✅ Exportiert";
+};
+$("imp").onclick=()=>$("jfile").click();
+$("jfile").onchange=e=>{
+ const f=e.target.files[0];if(!f)return;const r=new FileReader();
+ r.onload=()=>{try{
+  const j=JSON.parse(r.result),d=j.data||j;
+  if(!Array.isArray(d.saved)||!Array.isArray(d.extra))throw 0;
+  S=Object.assign({saved:[],extra:[],currency:"EUR",theme:"auto",bg:0,alpha:55,blur:18},d);
+  S.saved=S.saved.filter(i=>Number.isInteger(i)&&i>=0&&i<amounts.length);
+  S.extra=S.extra.map(Number).filter(n=>Number.isFinite(n)&&n>0);
+  save();applyLook();render();$("msg").textContent="✅ Importiert";
+ }catch(err){$("msg").textContent="❌ Ungültige JSON-Datei"}};
+ r.readAsText(f);e.target.value="";
+};
+applyLook();layout();render();
+</script>
+</body>
+</html>
